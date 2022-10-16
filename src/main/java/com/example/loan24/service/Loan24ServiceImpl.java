@@ -31,11 +31,8 @@ public class Loan24ServiceImpl implements Loan24Service {
     private UserRepository userRepository;
     @Autowired
     private LoanRepository loanRepository;
-
     @Autowired
     private PaymentRepository paymentRepository;
-
-
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) throws UserAlreadyExistException {
@@ -56,7 +53,6 @@ public class Loan24ServiceImpl implements Loan24Service {
                     .occupation(request.getOccupation())
                     .password(request.getPassword())
                     .build();
-
             User savedUser = userRepository.save(user);
             return RegisterUserResponse.builder()
                     .message("Welcome to Loan24 " + savedUser.getName() + ". Your registration was successful")
@@ -143,7 +139,7 @@ public class Loan24ServiceImpl implements Loan24Service {
                                 .build();
                         userLoan.get().setBalance(userLoan.get().getBalance().subtract(request.getAmount()));
                         loanRepository.save(userLoan.get());
-                        Payment savedPayment = paymentRepository.save(payment);
+                        paymentRepository.save(payment);
                         return PaymentResponse
                                 .builder()
                                 .message("Your payment was successful")
@@ -151,7 +147,7 @@ public class Loan24ServiceImpl implements Loan24Service {
                     }
                     throw new Loan24Exception("You can't pay more than you owe");
                 }
-                throw new Loan24Exception("AMount is invalid");
+                throw new Loan24Exception("Amount is invalid");
             }
 
         }
