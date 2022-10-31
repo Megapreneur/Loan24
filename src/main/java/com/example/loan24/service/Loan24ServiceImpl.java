@@ -52,6 +52,8 @@ public class Loan24ServiceImpl implements Loan24Service {
                     .phoneNumber(request.getPhoneNumber())
                     .occupation(request.getOccupation())
                     .password(request.getPassword())
+                    .guarantorName(request.getGuarantorName())
+                    .guarantorPhoneNumber(request.getGuarantorPhoneNumber())
                     .build();
             User savedUser = userRepository.save(user);
             return RegisterUserResponse.builder()
@@ -89,8 +91,6 @@ public class Loan24ServiceImpl implements Loan24Service {
                         .loanAmount(request.getLoanAmount())
                         .loanDuration(request.getLoanPlan())
                         .loanPurpose(request.getLoanPurpose())
-                        .guarantorName(request.getGuarantorName())
-                        .guarantorPhoneNumber(request.getGuarantorPhoneNumber())
                         .build();
                 Loan savedLoan = loanRepository.save(newLoan);
                 return LoanResponse

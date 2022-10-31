@@ -41,6 +41,9 @@ public class User {
     private String bankName;
     private String password;
     private String confirmPassword;
+    private String guarantorName;
+    @Column(unique = true)
+    private String guarantorPhoneNumber;
 
 
 

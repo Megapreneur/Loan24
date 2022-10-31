@@ -17,7 +17,5 @@ public class LoanRequest {
     private BigInteger loanAmount;
     private String loanPurpose;
     private String loanPlan;
-    private String guarantorName;
-    private String guarantorPhoneNumber;
 
 }

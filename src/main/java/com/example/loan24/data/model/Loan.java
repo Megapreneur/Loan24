@@ -29,9 +29,7 @@ public class Loan {
     private User user;
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate dateOfLoan = LocalDate.now();
-    private String guarantorName;
-    @Column(unique = true)
-    private String guarantorPhoneNumber;
+
 
 
 }

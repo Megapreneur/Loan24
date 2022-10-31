@@ -19,21 +19,13 @@ import java.time.LocalDate;
 
 public class RegisterUserRequest {
     private String name;
-    @Enumerated(value = EnumType.STRING)
     private Gender gender;
     private String occupation;
     private String address;
-    @Column(unique = true)
     private String phoneNumber;
-    @Column(unique = true)
     private String nin;
-    @Email
-    @Column(unique = true)
-    @Valid
     private String email;
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
     private String dob;
-    @Column(unique = true)
     private String accountNumber;
     private String bankName;
     private String password;
