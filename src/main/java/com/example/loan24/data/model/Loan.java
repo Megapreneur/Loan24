@@ -29,7 +29,4 @@ public class Loan {
     private User user;
     @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate dateOfLoan = LocalDate.now();
-
-
-
 }
