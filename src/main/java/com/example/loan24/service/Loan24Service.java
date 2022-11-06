@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public interface Loan24Service {
     RegisterUserResponse register(RegisterUserRequest request) throws UserAlreadyExistException;
-    LoginUserResponse login(LoginUserRequest request);
+//    LoginUserResponse login(LoginUserRequest request);
     LoanResponse applyForLoan(LoanRequest request);
     Customer findUser(FindUserRequest request);
     List<Loan>searchForLoans(String email);

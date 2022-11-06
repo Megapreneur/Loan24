@@ -47,19 +47,19 @@ public class Loan24ServiceImpl implements Loan24Service {
         throw new PasswordDoesNotMatchException("Your password does not match");
     }
 
-    @Override
-    public LoginUserResponse login(LoginUserRequest request) {
-        Optional<Customer> user = customerRepository.findByEmail(request.getEmail());
-        if (user.isPresent()){
-            if (user.get().getPassword().equals(request.getPassword())){
-                return LoginUserResponse.builder()
-                        .message("Welcome back " + user.get().getName())
-                        .build();
-            }
-            throw new InvalidUserException("Invalid login details!!!");
-        }
-        throw new InvalidUserException("Invalid login details!!!");
-    }
+//    @Override
+//    public LoginUserResponse login(LoginUserRequest request) {
+//        Optional<Customer> user = customerRepository.findByEmail(request.getEmail());
+//        if (user.isPresent()){
+//            if (user.get().getPassword().equals(request.getPassword())){
+//                return LoginUserResponse.builder()
+//                        .message("Welcome back " + user.get().getName())
+//                        .build();
+//            }
+//            throw new InvalidUserException("Invalid login details!!!");
+//        }
+//        throw new InvalidUserException("Invalid login details!!!");
+//    }
 
     @Override
     public LoanResponse applyForLoan(LoanRequest request) {
