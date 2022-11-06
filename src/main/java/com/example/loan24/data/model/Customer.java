@@ -6,23 +6,31 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
 @Valid
-@MappedSuperclass
-public class User {
-    private String name;
-    @Enumerated(value = EnumType.STRING)
-    private Gender gender;
-    private String address;
+public class Customer extends User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String occupation;
     @Column(unique = true)
-    private String phoneNumber;
-    @Email
+    private String nin;
+    private LocalDate dob;
     @Column(unique = true)
-    @Valid
-    private String email;
+    private String accountNumber;
+    private String bankName;
     private String password;
+
+
+
+
+
+
 }

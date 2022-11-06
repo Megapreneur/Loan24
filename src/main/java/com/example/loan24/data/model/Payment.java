@@ -4,6 +4,7 @@ import com.example.loan24.data.model.enumClass.PaymentType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 
@@ -17,7 +18,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private LocalDate dateOfPayment;
-    private BigInteger amount;
+    private BigDecimal amount;
     private PaymentType paymentType;
     @ManyToOne
     @JoinColumn

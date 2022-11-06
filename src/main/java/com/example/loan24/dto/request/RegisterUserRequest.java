@@ -30,6 +30,5 @@ public class RegisterUserRequest {
     private String bankName;
     private String password;
     private String confirmPassword;
-    private String guarantorName;
-    private String guarantorPhoneNumber;
+
 }

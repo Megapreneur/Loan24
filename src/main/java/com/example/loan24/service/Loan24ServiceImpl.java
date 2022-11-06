@@ -2,10 +2,10 @@ package com.example.loan24.service;
 
 import com.example.loan24.data.model.Loan;
 import com.example.loan24.data.model.Payment;
-import com.example.loan24.data.model.User;
+import com.example.loan24.data.model.Customer;
 import com.example.loan24.data.repository.LoanRepository;
 import com.example.loan24.data.repository.PaymentRepository;
-import com.example.loan24.data.repository.UserRepository;
+import com.example.loan24.data.repository.CustomerRepository;
 import com.example.loan24.dto.request.*;
 import com.example.loan24.dto.response.LoanResponse;
 import com.example.loan24.dto.response.LoginUserResponse;
@@ -15,47 +15,31 @@ import com.example.loan24.exception.Loan24Exception;
 import com.example.loan24.exception.PasswordDoesNotMatchException;
 import com.example.loan24.exception.UserAlreadyExistException;
 import com.example.loan24.exception.InvalidUserException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class Loan24ServiceImpl implements Loan24Service {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private LoanRepository loanRepository;
-    @Autowired
-    private PaymentRepository paymentRepository;
+    private final CustomerRepository customerRepository;
+    private final LoanRepository loanRepository;
+    private final PaymentRepository paymentRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) throws UserAlreadyExistException {
-        if (userRepository.existsByEmail(request.getEmail())) throw new UserAlreadyExistException("User Already Exist!!!");
+        if (customerRepository.existsByEmail(request.getEmail())) throw new UserAlreadyExistException("User Already Exist!!!");
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (request.getPassword().equals(request.getConfirmPassword())){
-            User user = User.builder()
-                    .name(request.getName())
-                    .email(request.getEmail())
-                    .dob(LocalDate.parse(request.getDob(), dateTimeFormatter))
-                    .accountNumber(request.getAccountNumber())
-                    .address(request.getAddress())
-                    .nin(request.getNin())
-                    .bankName(request.getBankName())
-                    .gender(request.getGender())
-                    .confirmPassword(request.getConfirmPassword())
-                    .phoneNumber(request.getPhoneNumber())
-                    .occupation(request.getOccupation())
-                    .password(request.getPassword())
-                    .guarantorName(request.getGuarantorName())
-                    .guarantorPhoneNumber(request.getGuarantorPhoneNumber())
-                    .build();
-            User savedUser = userRepository.save(user);
+            Customer newCustomer = modelMapper.map(request, Customer.class);
+            newCustomer.setDob(LocalDate.parse(request.getDob(), dateTimeFormatter));
+            Customer savedUser = customerRepository.save(newCustomer);
             return RegisterUserResponse.builder()
                     .message("Welcome to Loan24 " + savedUser.getName() + ". Your registration was successful")
                     .build();
@@ -65,7 +49,7 @@ public class Loan24ServiceImpl implements Loan24Service {
 
     @Override
     public LoginUserResponse login(LoginUserRequest request) {
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
+        Optional<Customer> user = customerRepository.findByEmail(request.getEmail());
         if (user.isPresent()){
             if (user.get().getPassword().equals(request.getPassword())){
                 return LoginUserResponse.builder()
@@ -79,7 +63,7 @@ public class Loan24ServiceImpl implements Loan24Service {
 
     @Override
     public LoanResponse applyForLoan(LoanRequest request) {
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
+        Optional<Customer> user = customerRepository.findByEmail(request.getEmail());
         if (user.isPresent()){
             Optional<Loan> loan = loanRepository.findUserById(user.get().getId());
             if (loan.isPresent()){
@@ -103,8 +87,8 @@ public class Loan24ServiceImpl implements Loan24Service {
     }
 
     @Override
-    public User findUser(FindUserRequest request) {
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
+    public Customer findUser(FindUserRequest request) {
+        Optional<Customer> user = customerRepository.findByEmail(request.getEmail());
         if (user.isPresent()){
             return user.get();
         }
@@ -113,7 +97,7 @@ public class Loan24ServiceImpl implements Loan24Service {
 
     @Override
     public List<Loan> searchForLoans(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
+        Optional<Customer> user = customerRepository.findByEmail(email);
         if (user.isPresent()){
             List<Loan> loanHistory = loanRepository.findUser(user.get());
             if(!loanHistory.isEmpty()){
@@ -126,7 +110,7 @@ public class Loan24ServiceImpl implements Loan24Service {
 
     @Override
     public PaymentResponse makePayment(PaymentRequest request){
-        Optional<User> user = userRepository.findByEmail(request.getEmail());
+        Optional<Customer> user = customerRepository.findByEmail(request.getEmail());
         if (user.isPresent()){
             Optional<Loan> userLoan = loanRepository.findUserById(user.get().getId());
             if (userLoan.isPresent()){

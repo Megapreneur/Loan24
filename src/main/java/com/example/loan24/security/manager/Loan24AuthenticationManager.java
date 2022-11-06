@@ -14,6 +14,6 @@ public class Loan24AuthenticationManager implements AuthenticationManager {
     private final Loan24AuthenticationProvider loan24AuthenticationProvider;
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return null;
+        return loan24AuthenticationProvider.authenticate(authentication);
     }
 }

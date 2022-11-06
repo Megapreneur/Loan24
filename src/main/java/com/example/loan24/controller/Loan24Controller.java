@@ -1,7 +1,7 @@
 package com.example.loan24.controller;
 
 import com.example.loan24.data.model.Loan;
-import com.example.loan24.data.model.User;
+import com.example.loan24.data.model.Customer;
 import com.example.loan24.dto.request.*;
 import com.example.loan24.dto.response.LoanResponse;
 import com.example.loan24.dto.response.LoginUserResponse;
@@ -36,7 +36,7 @@ public class Loan24Controller {
     }
 
     @GetMapping("findUser/")
-    public User findUser(@RequestBody FindUserRequest request){
+    public Customer findUser(@RequestBody FindUserRequest request){
         return loan24Service.findUser(request);
     }
 

@@ -1,10 +1,9 @@
 package com.example.loan24.security.filter;
 
-import com.example.loan24.data.model.User;
+import com.example.loan24.data.model.Customer;
 import com.example.loan24.security.manager.Loan24AuthenticationManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,9 +23,9 @@ public class Loan24AuthenticationFilter extends UsernamePasswordAuthenticationFi
     ObjectMapper mapper = new ObjectMapper();
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
-        User user;
+        Customer user;
         try {
-            user = mapper.readValue(request.getReader(), User.class);
+            user = mapper.readValue(request.getReader(), Customer.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
