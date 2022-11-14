@@ -26,7 +26,6 @@ public class TokenVerificationServiceImpl implements TokenVerificationService{
 
     @Override
     public boolean isValidTokenVerification(String token) {
-
         return false;
     }
 }
