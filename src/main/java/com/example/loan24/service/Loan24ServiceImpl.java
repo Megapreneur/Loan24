@@ -3,12 +3,12 @@ package com.example.loan24.service;
 import com.example.loan24.data.model.Loan;
 import com.example.loan24.data.model.Payment;
 import com.example.loan24.data.model.Customer;
+import com.example.loan24.data.model.enumClass.Authority;
 import com.example.loan24.data.repository.LoanRepository;
 import com.example.loan24.data.repository.PaymentRepository;
 import com.example.loan24.data.repository.CustomerRepository;
 import com.example.loan24.dto.request.*;
 import com.example.loan24.dto.response.LoanResponse;
-import com.example.loan24.dto.response.LoginUserResponse;
 import com.example.loan24.dto.response.PaymentResponse;
 import com.example.loan24.dto.response.RegisterUserResponse;
 import com.example.loan24.exception.Loan24Exception;
@@ -17,6 +17,7 @@ import com.example.loan24.exception.UserAlreadyExistException;
 import com.example.loan24.exception.InvalidUserException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,21 +26,25 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class Loan24ServiceImpl implements Loan24Service {
-    private final CustomerRepository customerRepository;
-    private final LoanRepository loanRepository;
-    private final PaymentRepository paymentRepository;
-    private final ModelMapper modelMapper;
+
+    @Autowired
+    private  CustomerRepository customerRepository;
+
+    @Autowired
+    private  LoanRepository loanRepository;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+    @Autowired
+    private  ModelMapper modelMapper;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) throws UserAlreadyExistException {
         if (customerRepository.existsByEmail(request.getEmail())) throw new UserAlreadyExistException("User Already Exist!!!");
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (request.getPassword().equals(request.getConfirmPassword())){
-            Customer newCustomer = modelMapper.map(request, Customer.class);
-            newCustomer.setDob(LocalDate.parse(request.getDob(), dateTimeFormatter));
-            Customer savedUser = customerRepository.save(newCustomer);
+            Customer savedUser = getCustomer(request, dateTimeFormatter);
             return RegisterUserResponse.builder()
                     .message("Welcome to Loan24 " + savedUser.getName() + ". Your registration was successful")
                     .build();
@@ -47,19 +52,12 @@ public class Loan24ServiceImpl implements Loan24Service {
         throw new PasswordDoesNotMatchException("Your password does not match");
     }
 
-//    @Override
-//    public LoginUserResponse login(LoginUserRequest request) {
-//        Optional<Customer> user = customerRepository.findByEmail(request.getEmail());
-//        if (user.isPresent()){
-//            if (user.get().getPassword().equals(request.getPassword())){
-//                return LoginUserResponse.builder()
-//                        .message("Welcome back " + user.get().getName())
-//                        .build();
-//            }
-//            throw new InvalidUserException("Invalid login details!!!");
-//        }
-//        throw new InvalidUserException("Invalid login details!!!");
-//    }
+    private Customer getCustomer(RegisterUserRequest request, DateTimeFormatter dateTimeFormatter) {
+        Customer newCustomer = modelMapper.map(request, Customer.class);
+        newCustomer.setDob(LocalDate.parse(request.getDob(), dateTimeFormatter));
+        newCustomer.getAuthority().add(Authority.BORROWER);
+        return customerRepository.save(newCustomer);
+    }
 
     @Override
     public LoanResponse applyForLoan(LoanRequest request) {
@@ -70,20 +68,28 @@ public class Loan24ServiceImpl implements Loan24Service {
                 if (loan.get().getBalance().intValue() > 0){
                     throw new Loan24Exception("You have to pay your outstanding loan of " + loan.get().getBalance());
                 }
-                Loan newLoan = Loan
-                        .builder()
-                        .loanAmount(request.getLoanAmount())
-                        .loanDuration(request.getLoanPlan())
-                        .loanPurpose(request.getLoanPurpose())
-                        .build();
-                Loan savedLoan = loanRepository.save(newLoan);
-                return LoanResponse
-                        .builder()
-                        .message("Your loan request of ₦" + savedLoan.getLoanAmount() + " has been granted")
-                        .build();
+                Loan savedLoan = getLoan(request);
+                return getLoanResponse(savedLoan);
             }
         }
      throw new InvalidUserException("Invalid user");
+    }
+
+    private static LoanResponse getLoanResponse(Loan savedLoan) {
+        return LoanResponse
+                .builder()
+                .message("Your loan request of ₦" + savedLoan.getLoanAmount() + " has been granted")
+                .build();
+    }
+
+    private Loan getLoan(LoanRequest request) {
+        Loan newLoan = Loan
+                .builder()
+                .loanAmount(request.getLoanAmount())
+                .loanDuration(request.getLoanPlan())
+                .loanPurpose(request.getLoanPurpose())
+                .build();
+        return loanRepository.save(newLoan);
     }
 
     @Override
@@ -99,7 +105,7 @@ public class Loan24ServiceImpl implements Loan24Service {
     public List<Loan> searchForLoans(String email) {
         Optional<Customer> user = customerRepository.findByEmail(email);
         if (user.isPresent()){
-            List<Loan> loanHistory = loanRepository.findUser(user.get());
+            List<Loan> loanHistory = loanRepository.findLoanByUserId(user.get().getId());
             if(!loanHistory.isEmpty()){
                 return loanHistory;
             }
@@ -123,11 +129,9 @@ public class Loan24ServiceImpl implements Loan24Service {
                                 .build();
                         userLoan.get().setBalance(userLoan.get().getBalance().subtract(request.getAmount()));
                         loanRepository.save(userLoan.get());
-                        paymentRepository.save(payment);
-                        return PaymentResponse
-                                .builder()
-                                .message("Your payment was successful")
-                                .build();
+                        @SuppressWarnings("newPayment")
+                        Payment newPayment = paymentRepository.save(payment);
+                        return getPaymentResponse();
                     }
                     throw new Loan24Exception("You can't pay more than you owe");
                 }
@@ -136,5 +140,17 @@ public class Loan24ServiceImpl implements Loan24Service {
 
         }
         throw new InvalidUserException("Invalid login details!!!");
+    }
+
+    private static PaymentResponse getPaymentResponse() {
+        return PaymentResponse
+                .builder()
+                .message("Your payment was successful")
+                .build();
+    }
+
+    @Override
+    public boolean isLoanApproved() {
+        return false;
     }
 }

@@ -9,6 +9,7 @@ import com.example.loan24.dto.request.LoginUserRequest;
 import com.example.loan24.dto.response.LoginUserResponse;
 import com.example.loan24.exception.InvalidUserException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,10 +24,8 @@ public class UserServiceImpl implements UserService{
     public LoginUserResponse login(LoginUserRequest request) {
         Optional<Admin> admin = adminRepository.findByEmail(request.getEmail());
         if (admin.isPresent() && admin.get().getPassword().equals(request.getPassword())) return response(admin.get());
-
         Optional<Customer> customer = customerRepository.findByEmail(request.getEmail());
         if (customer.isPresent() && customer.get().getPassword().equals(request.getPassword()))return response(customer.get());
-
         throw new InvalidUserException("Invalid Details!!!");
     }
 
@@ -38,6 +37,12 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserByUsername(String email) {
-        return null;
+        Optional<Admin> admin = adminRepository.findByEmail(email);
+        if (admin.isPresent()) return admin.get();
+
+        Optional<Customer> customer = customerRepository.findByEmail(email);
+        if (customer.isPresent()) return customer.get();
+
+        throw new UsernameNotFoundException("User not found");
     }
 }
