@@ -15,7 +15,6 @@ import com.example.loan24.exception.Loan24Exception;
 import com.example.loan24.exception.PasswordDoesNotMatchException;
 import com.example.loan24.exception.UserAlreadyExistException;
 import com.example.loan24.exception.InvalidUserException;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
