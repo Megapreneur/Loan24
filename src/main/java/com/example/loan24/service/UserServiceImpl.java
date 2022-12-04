@@ -10,6 +10,7 @@ import com.example.loan24.dto.response.LoginUserResponse;
 import com.example.loan24.exception.InvalidUserException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,13 +20,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
     private final AdminRepository adminRepository;
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public LoginUserResponse login(LoginUserRequest request) {
         Optional<Admin> admin = adminRepository.findByEmail(request.getEmail());
-        if (admin.isPresent() && admin.get().getPassword().equals(request.getPassword())) return response(admin.get());
+        if (admin.isPresent() && passwordEncoder.matches(request.getPassword(), admin.get().getPassword())) return response(admin.get());
         Optional<Customer> customer = customerRepository.findByEmail(request.getEmail());
-        if (customer.isPresent() && customer.get().getPassword().equals(request.getPassword()))return response(customer.get());
+        if (customer.isPresent() && passwordEncoder.matches(request.getPassword(), customer.get().getPassword()))return response(customer.get());
         throw new InvalidUserException("Invalid Details!!!");
     }
 

@@ -1,6 +1,7 @@
 package com.example.loan24.service;
 
 import com.example.loan24.data.model.Admin;
+import com.example.loan24.data.model.enumClass.Authority;
 import com.example.loan24.data.repository.AdminRepository;
 import com.example.loan24.data.repository.CustomerRepository;
 import com.example.loan24.dto.request.RegisterAdminRequest;
@@ -10,6 +11,7 @@ import com.example.loan24.exception.PasswordDoesNotMatchException;
 import com.example.loan24.exception.UserAlreadyExistException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,6 +20,8 @@ public class AdminServiceImpl implements AdminService{
     private  AdminRepository adminRepository;
     @Autowired
     private  ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -25,6 +29,8 @@ public class AdminServiceImpl implements AdminService{
         if (adminRepository.existsByEmail(request.getEmail())) throw new UserAlreadyExistException("Admin already exist");
         if(request.getPassword().equals(request.getConfirmPassword())){
             Admin newAdmin = modelMapper.map(request, Admin.class);
+            newAdmin.getAuthority().add(Authority.LENDER);
+            newAdmin.setPassword(passwordEncoder.encode(request.getPassword()));
             adminRepository.save(newAdmin);
             return RegisterUserResponse.builder()
                     .message("You registration was successful")

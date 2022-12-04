@@ -1,6 +1,9 @@
 package com.example.loan24.security.config;
 
+import com.auth0.jwt.algorithms.Algorithm;
+import com.example.loan24.security.jwt.JwtUtil;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,5 +18,16 @@ public class ProjectConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Value("${jwt.secret.key}")
+    private String secret;
+
+    @Value("${jwt.token.issuer}")
+    private String issuer;
+
+    @Bean
+    public JwtUtil jwtUtil(){
+        return new JwtUtil(issuer, Algorithm.HMAC512(secret));
     }
 }

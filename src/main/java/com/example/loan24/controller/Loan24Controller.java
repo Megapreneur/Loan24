@@ -2,6 +2,7 @@ package com.example.loan24.controller;
 
 import com.example.loan24.data.model.Loan;
 import com.example.loan24.data.model.Customer;
+import com.example.loan24.data.model.Payment;
 import com.example.loan24.dto.request.*;
 import com.example.loan24.dto.response.LoanResponse;
 import com.example.loan24.dto.response.LoginUserResponse;
@@ -59,6 +60,10 @@ public class Loan24Controller {
     @PatchMapping("makePayment/")
     public PaymentResponse makePayment(@RequestBody PaymentRequest request){
         return loan24Service.makePayment(request);
+    }
+    @GetMapping("findPayment/{email}")
+    public List<Payment> getPaymentHistory(@PathVariable String email){
+        return loan24Service.paymentHistory(email);
     }
 
 

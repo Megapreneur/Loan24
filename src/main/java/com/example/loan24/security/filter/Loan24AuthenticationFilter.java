@@ -1,10 +1,12 @@
 package com.example.loan24.security.filter;
 
 import com.example.loan24.data.model.Customer;
+import com.example.loan24.data.model.User;
 import com.example.loan24.security.jwt.JwtUtil;
 import com.example.loan24.security.manager.Loan24AuthenticationManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,9 +23,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class Loan24AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final Loan24AuthenticationManager loan24AuthenticationManager;
@@ -31,9 +35,9 @@ public class Loan24AuthenticationFilter extends UsernamePasswordAuthenticationFi
     ObjectMapper mapper = new ObjectMapper();
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
-        Customer user;
+        User user;
         try {
-            user = mapper.readValue(request.getReader(), Customer.class);
+            user = mapper.readValue(request.getReader(), User.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -24,5 +24,8 @@ public class Payment {
     @ManyToOne
     @JoinColumn
     private Loan loan;
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private Customer user;
 
 }

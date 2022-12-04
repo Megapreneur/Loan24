@@ -2,6 +2,7 @@ package com.example.loan24.service;
 
 import com.example.loan24.data.model.Loan;
 import com.example.loan24.data.model.Customer;
+import com.example.loan24.data.model.Payment;
 import com.example.loan24.dto.request.*;
 import com.example.loan24.dto.response.LoanResponse;
 import com.example.loan24.dto.response.LoginUserResponse;
@@ -20,4 +21,5 @@ public interface Loan24Service {
     PaymentResponse makePayment(PaymentRequest request);
     boolean isLoanApproved();
 
+    List<Payment> paymentHistory(String email);
 }

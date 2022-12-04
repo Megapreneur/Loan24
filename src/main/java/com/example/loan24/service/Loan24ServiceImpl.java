@@ -17,6 +17,7 @@ import com.example.loan24.exception.UserAlreadyExistException;
 import com.example.loan24.exception.InvalidUserException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,6 +38,8 @@ public class Loan24ServiceImpl implements Loan24Service {
     private PaymentRepository paymentRepository;
     @Autowired
     private  ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public RegisterUserResponse register(RegisterUserRequest request) throws UserAlreadyExistException {
@@ -55,6 +58,7 @@ public class Loan24ServiceImpl implements Loan24Service {
         Customer newCustomer = modelMapper.map(request, Customer.class);
         newCustomer.setDob(LocalDate.parse(request.getDob(), dateTimeFormatter));
         newCustomer.getAuthority().add(Authority.BORROWER);
+        newCustomer.setPassword(passwordEncoder.encode(request.getPassword()));
         return customerRepository.save(newCustomer);
     }
 
@@ -151,5 +155,18 @@ public class Loan24ServiceImpl implements Loan24Service {
     @Override
     public boolean isLoanApproved() {
         return false;
+    }
+
+    @Override
+    public List<Payment> paymentHistory(String email) {
+        Optional<Customer> user = customerRepository.findByEmail(email);
+        if (user.isPresent()){
+            List<Payment> paymentHistory = paymentRepository.findPaymentByUserId(user.get().getId());
+            if (!paymentHistory.isEmpty()){
+                return paymentHistory;
+            }
+            throw new Loan24Exception("You have no payment History!!!");
+        }
+        throw new InvalidUserException("Invalid login details!!!");
     }
 }
