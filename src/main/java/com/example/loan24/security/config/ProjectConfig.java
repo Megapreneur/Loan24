@@ -20,7 +20,7 @@ public class ProjectConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Value("${jwt.secret.key}")
+    @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.token.issuer}")

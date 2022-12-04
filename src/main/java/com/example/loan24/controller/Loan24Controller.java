@@ -32,7 +32,7 @@ public class Loan24Controller {
         return adminService.register(request);
     }
 
-    @PostMapping("register/")
+    @PostMapping("user/register/")
     public RegisterUserResponse register(@RequestBody RegisterUserRequest request) throws UserAlreadyExistException {
         return loan24Service.register(request);
     }
@@ -42,26 +42,26 @@ public class Loan24Controller {
         return userService.login(request);
     }
 
-    @PostMapping("applyForLoan/")
+    @PostMapping("user/applyForLoan/")
     public LoanResponse applyForLoan(@RequestBody LoanRequest request){
         return loan24Service.applyForLoan(request);
     }
 
-    @GetMapping("findUser/")
+    @GetMapping("admin/findUser/")
     public Customer findUser(@RequestBody FindUserRequest request){
         return loan24Service.findUser(request);
     }
 
-    @GetMapping("findLoan/{email}")
+    @GetMapping("user/findLoan/{email}")
     public List<Loan> searchForLoan(@PathVariable String email){
         return loan24Service.searchForLoans(email);
     }
 
-    @PatchMapping("makePayment/")
+    @PatchMapping("user/makePayment/")
     public PaymentResponse makePayment(@RequestBody PaymentRequest request){
         return loan24Service.makePayment(request);
     }
-    @GetMapping("findPayment/{email}")
+    @GetMapping("user/findPayment/{email}")
     public List<Payment> getPaymentHistory(@PathVariable String email){
         return loan24Service.paymentHistory(email);
     }

@@ -26,7 +26,7 @@ public class Loan24AuthorizationFilter  extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(AUTHORIZATION);
-        if (request.getServletPath().equals("api/v1/loan24/user/login")){
+        if (request.getServletPath().equals("api/v1/loan24/login")){
             filterChain.doFilter(request, response);
         }else {
             if (authHeader != null && authHeader.startsWith("Bearer ")){
