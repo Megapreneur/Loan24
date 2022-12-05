@@ -27,12 +27,12 @@ public class Loan24Controller {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping("admin/register/")
+    @PostMapping("admin/register")
     public RegisterUserResponse register(@RequestBody RegisterAdminRequest request) throws UserAlreadyExistException{
         return adminService.register(request);
     }
 
-    @PostMapping("user/register/")
+    @PostMapping("user/register")
     public RegisterUserResponse register(@RequestBody RegisterUserRequest request) throws UserAlreadyExistException {
         return loan24Service.register(request);
     }

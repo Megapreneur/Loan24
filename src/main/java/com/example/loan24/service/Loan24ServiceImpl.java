@@ -75,7 +75,7 @@ public class Loan24ServiceImpl implements Loan24Service {
                 return getLoanResponse(savedLoan);
             }
         }
-     throw new InvalidUserException("Invalid user");
+     throw new InvalidUserException("Invalid user!!!");
     }
 
     private static LoanResponse getLoanResponse(Loan savedLoan) {

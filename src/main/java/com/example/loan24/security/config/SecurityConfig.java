@@ -32,9 +32,10 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers( HttpMethod.POST,"/api/v1/loan24/admin/register",
-                        "/api/v1/loan24/user/register",
-                        "/api/v1/loan24/login")
+                        "/api/v1/loan24/user/register")
                 .permitAll()
+                .and()
+                .authorizeRequests()
                 .antMatchers("/api/v1/loan24/user/applyForLoan/",
                          "/api/v1/loan24/user/findLoan/{email}",
                         "/api/v1/loan24/admin/findUser/",

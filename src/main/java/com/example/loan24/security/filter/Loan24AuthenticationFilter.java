@@ -7,6 +7,7 @@ import com.example.loan24.security.manager.Loan24AuthenticationManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
+@Slf4j
 public class Loan24AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final Loan24AuthenticationManager loan24AuthenticationManager;
@@ -48,8 +50,8 @@ public class Loan24AuthenticationFilter extends UsernamePasswordAuthenticationFi
         Authentication authenticatedToken = loan24AuthenticationManager.authenticate(authenticationToken);
         if (authenticatedToken != null){
             SecurityContext securityContext = SecurityContextHolder.getContext();
-            securityContext.setAuthentication(authenticationToken);
-            return authenticationToken;
+            securityContext.setAuthentication(authenticatedToken);
+            return authenticatedToken;
         }
         throw new BadCredentialsException("Invalid User");
     }

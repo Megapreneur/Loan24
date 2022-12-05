@@ -1,6 +1,7 @@
 package com.example.loan24.security.provider;
 
 import com.example.loan24.utils.Loan24UserDetailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class Loan24AuthenticationProvider implements AuthenticationProvider {
     @Autowired
     private Loan24UserDetailService userDetailService;
@@ -23,18 +25,17 @@ public class Loan24AuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = userDetailService.loadUserByUsername((String) authentication.getPrincipal());
         if (userDetails != null){
             if (isMatches(authentication, userDetails)){
+                log.info("here->{}", userDetails);
                 return new UsernamePasswordAuthenticationToken(userDetails, authentication.getCredentials(),
-                        authentication.getAuthorities());
+                        userDetails.getAuthorities());
             }
             throw new BadCredentialsException("Incorrect password!!!");
         }
         throw new UsernameNotFoundException("Email not found!!!");
     }
-
     private boolean isMatches(Authentication authentication, UserDetails userDetails) {
         return passwordEncoder.matches((String) authentication.getCredentials(), userDetails.getPassword());
     }
-
     @Override
     public boolean supports(Class<?> authentication) {
         Class<UsernamePasswordAuthenticationToken> appAuthType = UsernamePasswordAuthenticationToken.class;
