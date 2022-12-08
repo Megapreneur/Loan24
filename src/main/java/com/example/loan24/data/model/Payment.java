@@ -20,6 +20,7 @@ public class Payment {
     private long id;
     private LocalDate dateOfPayment;
     private BigDecimal amount;
+    @Enumerated(value = EnumType.STRING)
     private PaymentType paymentType;
     @ManyToOne
     @JoinColumn

@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class TokenVerification {
@@ -20,6 +21,6 @@ public class TokenVerification {
     private Long id;
     private String token;
     private String userEmail;
-    private LocalDateTime createdAt;
-    private LocalDateTime expiresAt;
+    private LocalDateTime createdAt=LocalDateTime.now();
+    private LocalDateTime expiresAt= createdAt.plusMinutes(5);
 }

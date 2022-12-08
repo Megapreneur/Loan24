@@ -38,7 +38,6 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/v1/loan24/user/applyForLoan/",
                          "/api/v1/loan24/user/findLoan/{email}",
-                        "/api/v1/loan24/admin/findUser/",
                         "/api/v1/loan24/user/makePayment/",
                         "/api/v1/loan24/user/findPayment/{email}")
                 .hasAnyAuthority("BORROWER")

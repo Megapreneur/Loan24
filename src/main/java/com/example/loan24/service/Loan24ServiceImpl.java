@@ -71,11 +71,13 @@ public class Loan24ServiceImpl implements Loan24Service {
                 if (loan.get().getBalance().intValue() > 0){
                     throw new Loan24Exception("You have to pay your outstanding loan of " + loan.get().getBalance());
                 }
-                Loan savedLoan = getLoan(request);
+                Loan savedLoan = getLoan(request, user.get());
                 return getLoanResponse(savedLoan);
             }
+            Loan saved = getLoan(request, user.get());
+            return getLoanResponse(saved);
         }
-     throw new InvalidUserException("Invalid user!!!");
+        throw new InvalidUserException("Invalid user!!!");
     }
 
     private static LoanResponse getLoanResponse(Loan savedLoan) {
@@ -85,12 +87,17 @@ public class Loan24ServiceImpl implements Loan24Service {
                 .build();
     }
 
-    private Loan getLoan(LoanRequest request) {
+    private Loan getLoan(LoanRequest request, Customer user) {
         Loan newLoan = Loan
                 .builder()
+                .guarantorPhoneNumber(request.getGuarantorPhoneNumber())
+                .guarantorName(request.getGuarantorName())
+                .loanPurpose(request.getLoanPurpose())
                 .loanAmount(request.getLoanAmount())
                 .loanDuration(request.getLoanPlan())
-                .loanPurpose(request.getLoanPurpose())
+                .balance(request.getLoanAmount())
+                .dateOfLoan(LocalDate.now())
+                .user(user)
                 .build();
         return loanRepository.save(newLoan);
     }
@@ -124,11 +131,14 @@ public class Loan24ServiceImpl implements Loan24Service {
             Optional<Loan> userLoan = loanRepository.findUserById(user.get().getId());
             if (userLoan.isPresent()){
                 if (request.getAmount().intValue() > 0){
-                    if (request.getAmount().intValue() <= userLoan.get().getLoanAmount().intValue()){
+                    if (request.getAmount().intValue() <= userLoan.get().getBalance().intValue()){
                         Payment payment = Payment
                                 .builder()
                                 .paymentType(request.getPaymentType())
                                 .amount(request.getAmount())
+                                .dateOfPayment(LocalDate.now())
+                                .user(user.get())
+                                .loan(userLoan.get())
                                 .build();
                         userLoan.get().setBalance(userLoan.get().getBalance().subtract(request.getAmount()));
                         loanRepository.save(userLoan.get());

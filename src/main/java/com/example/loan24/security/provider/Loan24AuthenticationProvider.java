@@ -25,7 +25,6 @@ public class Loan24AuthenticationProvider implements AuthenticationProvider {
         UserDetails userDetails = userDetailService.loadUserByUsername((String) authentication.getPrincipal());
         if (userDetails != null){
             if (isMatches(authentication, userDetails)){
-                log.info("here->{}", userDetails);
                 return new UsernamePasswordAuthenticationToken(userDetails, authentication.getCredentials(),
                         userDetails.getAuthorities());
             }
