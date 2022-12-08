@@ -25,7 +25,6 @@ public class Customer extends User {
     @Column(unique = true)
     private String accountNumber;
     private String bankName;
-    private String password;
 
 
 

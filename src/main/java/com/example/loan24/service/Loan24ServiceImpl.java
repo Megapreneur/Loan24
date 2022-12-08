@@ -4,10 +4,12 @@ import com.example.loan24.data.model.Loan;
 import com.example.loan24.data.model.Payment;
 import com.example.loan24.data.model.Customer;
 import com.example.loan24.data.model.enumClass.Authority;
+import com.example.loan24.data.repository.AdminRepository;
 import com.example.loan24.data.repository.LoanRepository;
 import com.example.loan24.data.repository.PaymentRepository;
 import com.example.loan24.data.repository.CustomerRepository;
 import com.example.loan24.dto.request.*;
+import com.example.loan24.dto.response.CustomerDto;
 import com.example.loan24.dto.response.LoanResponse;
 import com.example.loan24.dto.response.PaymentResponse;
 import com.example.loan24.dto.response.RegisterUserResponse;
@@ -30,6 +32,9 @@ public class Loan24ServiceImpl implements Loan24Service {
 
     @Autowired
     private  CustomerRepository customerRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
 
     @Autowired
     private  LoanRepository loanRepository;
@@ -103,12 +108,23 @@ public class Loan24ServiceImpl implements Loan24Service {
     }
 
     @Override
-    public Customer findUser(FindUserRequest request) {
+    public CustomerDto findUser(FindUserRequest request) {
         Optional<Customer> user = customerRepository.findByEmail(request.getEmail());
-        if (user.isPresent()){
-            return user.get();
-        }
-        throw new InvalidUserException("Invalid login details!!!");
+            if (user.isPresent()){
+                return CustomerDto
+                        .builder()
+                        .name(user.get().getName())
+                        .address(user.get().getAddress())
+                        .dob(user.get().getDob())
+                        .gender(user.get().getGender())
+                        .email(user.get().getEmail())
+                        .phoneNumber(user.get().getPhoneNumber())
+                        .occupation(user.get().getOccupation())
+                        .nin(user.get().getNin())
+                        .bankName(user.get().getBankName())
+                        .accountNumber(user.get().getAccountNumber()).build();
+            }
+            throw new InvalidUserException("User does not exist!!!");
     }
 
     @Override

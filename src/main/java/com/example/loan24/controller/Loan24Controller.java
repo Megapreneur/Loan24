@@ -1,13 +1,9 @@
 package com.example.loan24.controller;
 
 import com.example.loan24.data.model.Loan;
-import com.example.loan24.data.model.Customer;
 import com.example.loan24.data.model.Payment;
 import com.example.loan24.dto.request.*;
-import com.example.loan24.dto.response.LoanResponse;
-import com.example.loan24.dto.response.LoginUserResponse;
-import com.example.loan24.dto.response.PaymentResponse;
-import com.example.loan24.dto.response.RegisterUserResponse;
+import com.example.loan24.dto.response.*;
 import com.example.loan24.exception.UserAlreadyExistException;
 import com.example.loan24.service.AdminService;
 import com.example.loan24.service.Loan24Service;
@@ -48,7 +44,7 @@ public class Loan24Controller {
     }
 
     @GetMapping("admin/findUser/")
-    public Customer findUser(@RequestBody FindUserRequest request){
+    public CustomerDto findUser(@RequestBody FindUserRequest request){
         return loan24Service.findUser(request);
     }
 
