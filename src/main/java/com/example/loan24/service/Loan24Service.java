@@ -16,6 +16,5 @@ public interface Loan24Service {
     List<Loan>searchForLoans(String email);
     PaymentResponse makePayment(PaymentRequest request);
     boolean isLoanApproved();
-
     List<Payment> paymentHistory(String email);
 }
